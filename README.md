@@ -10,5 +10,9 @@ Beyond The Search is a React/Vite directory with a MongoDB-backed API for managi
 4. Build and start the application with `npm run build` followed by `npm run server`. The API serves the built frontend when they are deployed together.
 5. For Vite development against a separately deployed API, set `API_PROXY_TARGET` to that API's public URL before running `npm run dev`.
 
+## Vercel frontend deployment
+
+Set `VITE_API_URL` to the Render API origin in the Vercel project's environment variables, then redeploy. The included `vercel.json` rewrites all frontend routes to `index.html`, allowing direct navigation to `/login`, `/register`, password-reset links, and list-detail pages.
+
 Menu changes are stored in MongoDB and are reflected in the public header through `/api/menu?active=true`. If the API is unavailable, the site keeps the built-in default navigation links.
 "# BeyondTheSearches" 
