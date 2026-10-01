@@ -240,12 +240,20 @@ const runEventReminders = async () => {
     eventReminderRunInProgress = false
   }
 }
-const resolveItemTypeId = async (body) => {
-  if (!body.itemTypeId || body.itemTypeId === 'other') return undefined
-  const menuItem = await MenuItem.findOne({ _id: body.itemTypeId, menuType: 'left_menu', is_active: true }).select('_id label').lean()
-  if (!menuItem) return null
-  if (body.itemType && body.itemType !== menuItem.label) return null
-  return menuItem._id
+const resolveListItemType = async (body) => {
+  if (body.itemType === 'other') {
+    const menuItem = await addSubmittedTypeToMenu(body.otherItemType)
+    return { itemType: menuItem.label, itemTypeId: menuItem._id }
+  }
+
+  if (!body.itemTypeId) return null
+  const menuItem = await MenuItem.findOne({
+    _id: body.itemTypeId,
+    menuType: 'left_menu',
+    is_active: true,
+  }).select('_id label').lean()
+  if (!menuItem || body.itemType !== menuItem.label) return null
+  return { itemType: menuItem.label, itemTypeId: menuItem._id }
 }
 
 app.use(cors())
@@ -441,6 +449,12 @@ const addSubmittedTypeToMenu = async (label) => {
     is_active: true,
   })
 }
+const normalizeItemTypeLabel = (label) => String(label)
+  .normalize('NFKC')
+  .replace(/[^\p{L}\p{N}\s]/gu, '')
+  .replace(/\s+/g, ' ')
+  .trim()
+  .toLowerCase()
 
 app.get('/api/health', (_request, response) => {
   response.json({ ok: true, database: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected' })
@@ -563,8 +577,8 @@ app.post('/api/lists', authenticate, upload.array('photos', 10), async (request,
     if (request.body.itemType === 'other' && !request.body.otherItemType?.trim()) {
       return response.status(400).json({ error: 'Other item type is required when item type is Other.' })
     }
-    const itemTypeId = await resolveItemTypeId(request.body)
-    if (request.body.itemType !== 'other' && !itemTypeId) return response.status(400).json({ error: 'Please select a valid item type.' })
+    const listItemType = await resolveListItemType(request.body)
+    if (!listItemType) return response.status(400).json({ error: 'Please select a valid item type.' })
     if (isEventType(request.body) && !request.body.eventSubcategory?.trim()) {
       return response.status(400).json({ error: 'Please select an event subcategory.' })
     }
@@ -575,11 +589,12 @@ app.post('/api/lists', authenticate, upload.array('photos', 10), async (request,
     if (isEventType(request.body) && (!dateRange || !isUpcomingDateRange(dateRange))) {
       return response.status(400).json({ error: 'Events require future start and end dates.' })
     }
-    if (request.body.itemType === 'other') await addSubmittedTypeToMenu(request.body.otherItemType)
     const list = await List.create({
       ...request.body,
       userId: request.user._id,
-      itemTypeId,
+      itemType: listItemType.itemType,
+      itemTypeId: listItemType.itemTypeId,
+      otherItemType: undefined,
       name: request.user.name,
       user_is_active: true,
       admin_is_active: false,
@@ -832,8 +847,8 @@ app.patch('/api/my-lists/:id', authenticate, upload.array('photos', 10), async (
     if (request.body.itemType.trim() === 'other' && !request.body.otherItemType?.trim()) {
       return response.status(400).json({ error: 'Other item type is required when item type is Other.' })
     }
-    const itemTypeId = await resolveItemTypeId(request.body)
-    if (request.body.itemType.trim() !== 'other' && !itemTypeId) return response.status(400).json({ error: 'Please select a valid item type.' })
+    const listItemType = await resolveListItemType(request.body)
+    if (!listItemType) return response.status(400).json({ error: 'Please select a valid item type.' })
     if (isEventType(request.body) && !request.body.eventSubcategory?.trim()) {
       return response.status(400).json({ error: 'Please select an event subcategory.' })
     }
@@ -851,9 +866,9 @@ app.patch('/api/my-lists/:id', authenticate, upload.array('photos', 10), async (
       { $set: {
         name: request.body.name.trim(),
         itemName: request.body.itemName?.trim(),
-        itemType: request.body.itemType?.trim(),
-        itemTypeId,
-        otherItemType: request.body.otherItemType?.trim() || undefined,
+        itemType: listItemType.itemType,
+        itemTypeId: listItemType.itemTypeId,
+        otherItemType: undefined,
         eventSubcategory: isEventType(request.body) ? request.body.eventSubcategory.trim() : undefined,
         ...dateRange,
         address: request.body.address?.trim() || undefined,
@@ -905,8 +920,8 @@ app.patch('/api/lists/:id', authenticate, requireRole('admin'), async (request, 
     if (request.body.itemType === 'other' && !request.body.otherItemType?.trim()) {
       return response.status(400).json({ error: 'Other item type is required when item type is Other.' })
     }
-    const itemTypeId = await resolveItemTypeId(request.body)
-    if (request.body.itemType !== 'other' && !itemTypeId) return response.status(400).json({ error: 'Please select a valid item type.' })
+    const listItemType = await resolveListItemType(request.body)
+    if (!listItemType) return response.status(400).json({ error: 'Please select a valid item type.' })
     if (isEventType(request.body) && !request.body.eventSubcategory?.trim()) {
       return response.status(400).json({ error: 'Please select an event subcategory.' })
     }
@@ -923,9 +938,9 @@ app.patch('/api/lists/:id', authenticate, requireRole('admin'), async (request, 
       {
         name: request.body.name.trim(),
         itemName: request.body.itemName.trim(),
-        itemType: request.body.itemType.trim(),
-        itemTypeId,
-        otherItemType: request.body.otherItemType?.trim() || undefined,
+        itemType: listItemType.itemType,
+        itemTypeId: listItemType.itemTypeId,
+        otherItemType: undefined,
         eventSubcategory: isEventType(request.body) ? request.body.eventSubcategory.trim() : undefined,
         is_Premium: request.body.is_Premium === true,
         admin_is_active: request.body.admin_is_active !== false,
@@ -1070,10 +1085,33 @@ const start = async () => {
     { upsert: true },
   )))
   const leftMenuItems = await MenuItem.find({ menuType: 'left_menu' }).select('_id label').lean()
-  await Promise.all(leftMenuItems.map((menuItem) => List.updateMany(
-    { itemType: menuItem.label, itemTypeId: { $exists: false } },
-    { $set: { itemTypeId: menuItem._id } },
-  )))
+  const legacyOtherItemTypes = await List.distinct('otherItemType', {
+    itemType: 'other',
+    otherItemType: { $exists: true, $ne: '' },
+  })
+  await Promise.all(legacyOtherItemTypes.map(async (label) => {
+    const menuItem = await addSubmittedTypeToMenu(label)
+    await List.updateMany(
+      { itemType: 'other', otherItemType: label },
+      { $set: { itemType: menuItem.label, itemTypeId: menuItem._id }, $unset: { otherItemType: '' } },
+    )
+  }))
+  const menuItemsByNormalizedLabel = new Map(leftMenuItems.map((menuItem) => [
+    normalizeItemTypeLabel(menuItem.label),
+    menuItem,
+  ]))
+  const legacyItemTypes = await List.distinct('itemType', { itemTypeId: { $in: [null] }, itemType: { $ne: 'other' } })
+  await Promise.all(legacyItemTypes.map(async (label) => {
+    let menuItem = menuItemsByNormalizedLabel.get(normalizeItemTypeLabel(label))
+    if (!menuItem) {
+      menuItem = await addSubmittedTypeToMenu(label)
+      menuItemsByNormalizedLabel.set(normalizeItemTypeLabel(label), menuItem)
+    }
+    await List.updateMany(
+      { itemType: label, itemTypeId: { $in: [null] } },
+      { $set: { itemType: menuItem.label, itemTypeId: menuItem._id } },
+    )
+  }))
   await User.updateMany({ role: { $exists: false } }, { $set: { role: 'enduser' } })
   await User.updateMany({ eventReminders: { $exists: false } }, { $set: { eventReminders: false } })
   if (process.env.ADMIN_EMAIL) {
@@ -1097,6 +1135,7 @@ const start = async () => {
         name: sampleOwner.name,
         itemName,
         itemType,
+        itemTypeId: leftMenuItems.find((menuItem) => menuItem.label === itemType)?._id,
         is_Premium: false,
         user_is_active: true,
         admin_is_active: true,
