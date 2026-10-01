@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { apiFetch } from '../api'
 import styles from './VisitorPreferences.module.css'
 
 const getStoredPreferences = () => {
@@ -37,7 +38,7 @@ export function VisitorPreferences({ onComplete }) {
   const [loadingLocations, setLoadingLocations] = useState(() => /^\d{5}$/.test(String(initialPreferences.zipCode || '').trim()))
 
   useEffect(() => {
-    fetch('/api/menu?active=true&menuType=left_menu')
+    apiFetch('/api/menu?active=true&menuType=left_menu')
       .then((response) => {
         if (!response.ok) throw new Error('Unable to load interests')
         return response.json()
@@ -55,7 +56,7 @@ export function VisitorPreferences({ onComplete }) {
     if (!/^\d{5}$/.test(savedZipCode)) return undefined
 
     let cancelled = false
-    fetch(`/api/locations/nearby?zip=${encodeURIComponent(savedZipCode)}`)
+    apiFetch(`/api/locations/nearby?zip=${encodeURIComponent(savedZipCode)}`)
       .then((response) => response.ok ? response.json() : Promise.reject(new Error('Unable to find nearby cities.')))
       .then((items) => {
         if (!cancelled) setLocations(mergeLocations(items, savedLocations))
@@ -80,7 +81,7 @@ export function VisitorPreferences({ onComplete }) {
     }
     setLoadingLocations(true)
     try {
-      const response = await fetch(`/api/locations/nearby?zip=${encodeURIComponent(zipCode.trim())}`)
+      const response = await apiFetch(`/api/locations/nearby?zip=${encodeURIComponent(zipCode.trim())}`)
       const result = await response.json()
       if (!response.ok) throw new Error(result.error || 'Unable to find nearby cities.')
       setLocations(mergeLocations(result, selectedLocations))

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { apiFetch } from '../api'
 import styles from './ContactPage.module.css'
 
 const initialForm = { name: '', mobile: '', email: '', message: '' }
@@ -17,7 +18,7 @@ export function ContactPage() {
     setStatus({ type: '', message: '' })
     setSending(true)
     try {
-      const response = await fetch('/api/contact', {
+      const response = await apiFetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { apiFetch } from '../api'
 import { defaultMenu } from '../data/menu'
 import { RichTextEditor } from './RichTextEditor'
 import styles from './Admin.module.css'
@@ -24,7 +25,7 @@ export function Admin() {
 
   const loadItems = useCallback(async () => {
     try {
-      const response = await fetch('/api/menu?includeInactive=true', { headers: authHeaders })
+      const response = await apiFetch('/api/menu?includeInactive=true', { headers: authHeaders })
       if (!response.ok) throw new Error('Unable to load menu items.')
       setItems(await response.json())
     } catch {
@@ -34,13 +35,13 @@ export function Admin() {
   }, [authHeaders])
 
   const loadLists = useCallback(async () => {
-    const response = await fetch('/api/lists?includeInactive=true', { headers: authHeaders })
+    const response = await apiFetch('/api/lists?includeInactive=true', { headers: authHeaders })
     if (response.ok) setLists(await response.json())
   }, [authHeaders])
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
-      fetch('/api/me', { headers: authHeaders })
+      apiFetch('/api/me', { headers: authHeaders })
         .then((response) => {
           if (!response.ok) throw new Error('Admin login required.')
           return response.json()
@@ -49,7 +50,7 @@ export function Admin() {
           if (user.role !== 'admin') throw new Error('Admin access required.')
           setAuthorized(true)
           loadItems()
-          fetch('/api/event-subcategories')
+          apiFetch('/api/event-subcategories')
             .then((response) => response.ok ? response.json() : Promise.reject(new Error('Unable to load event subcategories')))
             .then((items) => setAvailableEventSubcategories(items.map((item) => item.label)))
             .catch(() => setAvailableEventSubcategories(eventSubcategories))
@@ -59,7 +60,7 @@ export function Admin() {
           setAuthorized(false)
           setStatus(reason.message)
         })
-      fetch('/api/locations')
+      apiFetch('/api/locations')
         .then((response) => {
           if (!response.ok) throw new Error('Unable to load locations.')
           return response.json()
@@ -80,7 +81,7 @@ export function Admin() {
     setStatus('')
     const payload = { ...form, order: Number(form.order) }
     const url = editingId ? `/api/menu/${editingId}` : '/api/menu'
-    const response = await fetch(url, {
+    const response = await apiFetch(url, {
       method: editingId ? 'PATCH' : 'POST',
       headers: { 'Content-Type': 'application/json', ...authHeaders },
       body: JSON.stringify(payload),
@@ -103,7 +104,7 @@ export function Admin() {
   }
 
   const deleteItem = async (id) => {
-    const response = await fetch(`/api/menu/${id}`, { method: 'DELETE', headers: authHeaders })
+    const response = await apiFetch(`/api/menu/${id}`, { method: 'DELETE', headers: authHeaders })
     if (!response.ok) {
       setStatus('Unable to delete menu item.')
       return
@@ -142,7 +143,7 @@ export function Admin() {
 
   const saveList = async (event) => {
     event.preventDefault()
-    const response = await fetch(`/api/lists/${editingListId}`, {
+    const response = await apiFetch(`/api/lists/${editingListId}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json', ...authHeaders },
       body: JSON.stringify(listForm),
@@ -159,7 +160,7 @@ export function Admin() {
   }
 
   const deleteList = async (id) => {
-    const response = await fetch(`/api/lists/${id}`, { method: 'DELETE', headers: authHeaders })
+    const response = await apiFetch(`/api/lists/${id}`, { method: 'DELETE', headers: authHeaders })
     if (!response.ok) {
       setStatus('Unable to delete list.')
       return

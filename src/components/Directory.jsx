@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { apiFetch, apiUrl } from '../api'
 import { eventSubcategories as defaultEventSubcategories } from '../data/eventSubcategories'
 import styles from './Directory.module.css'
 
@@ -38,12 +39,12 @@ export function Directory({ embedded = false, selectedCategory = '', onClearCate
   const preferredCategories = preferenceValues(preferences, 'interests', 'interest')
 
   useEffect(() => {
-    fetch('/api/event-subcategories')
+    apiFetch('/api/event-subcategories')
       .then((response) => response.ok ? response.json() : Promise.reject(new Error('Unable to load event subcategories')))
       .then((items) => setEventSubcategories(items.map((item) => item.label)))
       .catch(() => setEventSubcategories(defaultEventSubcategories))
 
-    fetch('/api/locations')
+    apiFetch('/api/locations')
       .then((response) => response.ok ? response.json() : Promise.reject(new Error('Unable to load locations')))
       .then(setLocations)
       .catch(() => setLocations([]))
@@ -66,7 +67,7 @@ export function Directory({ embedded = false, selectedCategory = '', onClearCate
     if (filters.location) params.set('location', filters.location)
     if (preferences?.interests?.length) params.set('interests', preferences.interests.join(','))
     setLoading(true)
-    fetch(`/api/lists?${params}`)
+    apiFetch(`/api/lists?${params}`)
       .then((response) => {
         if (!response.ok) throw new Error('Unable to load lists')
         return response.json()
@@ -170,7 +171,7 @@ export function Directory({ embedded = false, selectedCategory = '', onClearCate
         {lists.map((list) => (
           <a className={styles.card} href={`/lists/${list._id}`} key={list._id}>
             <div className={styles.image}>
-              {list.photos?.[0]?.url ? <img src={list.photos[0].url} alt={list.itemName} /> : <span>No photo</span>}
+              {list.photos?.[0]?.url ? <img src={apiUrl(list.photos[0].url)} alt={list.itemName} /> : <span>No photo</span>}
             </div>
             <div className={styles.cardInfo}>
               <p>{list.itemType === 'other' ? list.otherItemType : list.itemType}</p>

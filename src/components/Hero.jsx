@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { apiFetch, apiUrl } from '../api'
 import { rankLists } from '../utils/listRanking'
 import styles from './Hero.module.css'
 
@@ -27,7 +28,7 @@ export function Hero() {
   }
 
   useEffect(() => {
-    fetch('/api/lists')
+    apiFetch('/api/lists')
       .then((response) => {
         if (!response.ok) throw new Error('Unable to load featured listing')
         return response.json()
@@ -58,7 +59,7 @@ export function Hero() {
           <a className={styles.featuredLink} href={`/lists/${featured._id}`} aria-label={`View details for ${featured.itemName}`}>
             <div className={styles.arch}>
             {featured?.photos?.[0]?.url ? (
-              <img className={styles.archImage} src={featured.photos[0].url} alt={featured.itemName} />
+              <img className={styles.archImage} src={apiUrl(featured.photos[0].url)} alt={featured.itemName} />
             ) : (
               <div className={styles.archImage} />
             )}

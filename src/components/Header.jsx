@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { apiFetch } from '../api'
 import { defaultMenu } from '../data/menu'
 import styles from './Header.module.css'
 
@@ -39,7 +40,7 @@ export function Header() {
   const unreadNotificationCount = notifications.filter((notification) => !notification.read).length
   const normalizeCategory = (value) => String(value || '').replace(/[^\p{L}\p{N}\s]/gu, '').trim().replace(/\s+/g, ' ').toLowerCase()
   const markNotificationRead = async (id) => {
-    const response = await fetch(`/api/notifications/${id}/read`, {
+    const response = await apiFetch(`/api/notifications/${id}/read`, {
       method: 'PATCH',
       headers: { Authorization: `Bearer ${localStorage.getItem('listToken') || ''}` },
     })
@@ -50,7 +51,7 @@ export function Header() {
   }
 
   useEffect(() => {
-    fetch('/api/menu?active=true&menuType=main_menu')
+    apiFetch('/api/menu?active=true&menuType=main_menu')
       .then((response) => {
         if (!response.ok) throw new Error('Unable to load menu')
         return response.json()
@@ -61,7 +62,7 @@ export function Header() {
       })
       .catch(() => setMenu(defaultMenu))
 
-    fetch('/api/menu?active=true&menuType=left_menu')
+    apiFetch('/api/menu?active=true&menuType=left_menu')
       .then((response) => {
         if (!response.ok) throw new Error('Unable to load left menu')
         return response.json()
@@ -69,7 +70,7 @@ export function Header() {
       .then(setLeftMenu)
       .catch(() => setLeftMenu([]))
 
-    fetch('/api/lists')
+    apiFetch('/api/lists')
       .then((response) => {
         if (!response.ok) throw new Error('Unable to load active list counts')
         return response.json()
@@ -85,7 +86,7 @@ export function Header() {
       .catch(() => setActiveListCounts({}))
 
     if (isLoggedIn) {
-      fetch('/api/notifications', {
+      apiFetch('/api/notifications', {
         headers: { Authorization: `Bearer ${localStorage.getItem('listToken') || ''}` },
       })
         .then((response) => response.ok ? response.json() : Promise.reject(new Error('Unable to load notifications')))

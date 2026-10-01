@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { apiFetch, apiUrl } from '../api'
 import { RichTextEditor } from './RichTextEditor'
 import { eventSubcategories } from '../data/eventSubcategories'
 import { formatEventDates } from '../utils/eventDisplay'
@@ -19,14 +20,14 @@ export function Account() {
   const [availableEventSubcategories, setAvailableEventSubcategories] = useState(eventSubcategories)
 
   const loadLists = async () => {
-    const response = await fetch('/api/my-lists', { headers: { Authorization: `Bearer ${localStorage.getItem('listToken') || ''}` } })
+    const response = await apiFetch('/api/my-lists', { headers: { Authorization: `Bearer ${localStorage.getItem('listToken') || ''}` } })
     if (!response.ok) throw new Error('Please log in to manage your lists.')
     setLists(await response.json())
     setLoading(false)
   }
 
   const loadProfile = async () => {
-    const response = await fetch('/api/me', {
+    const response = await apiFetch('/api/me', {
       headers: { Authorization: `Bearer ${localStorage.getItem('listToken') || ''}` },
     })
     if (!response.ok) throw new Error('Unable to load account information.')
@@ -34,21 +35,21 @@ export function Account() {
   }
 
   useEffect(() => {
-    fetch('/api/menu?active=true&menuType=left_menu')
+    apiFetch('/api/menu?active=true&menuType=left_menu')
       .then((response) => {
         if (!response.ok) throw new Error('Unable to load item types')
         return response.json()
       })
       .then(setItemTypes)
       .catch(() => setItemTypes([]))
-    fetch('/api/locations')
+    apiFetch('/api/locations')
       .then((response) => {
         if (!response.ok) throw new Error('Unable to load locations')
         return response.json()
       })
       .then(setLocations)
       .catch(() => setLocations([]))
-    fetch('/api/event-subcategories')
+    apiFetch('/api/event-subcategories')
       .then((response) => response.ok ? response.json() : Promise.reject(new Error('Unable to load event subcategories')))
       .then((items) => setAvailableEventSubcategories(items.map((item) => item.label)))
       .catch(() => setAvailableEventSubcategories(eventSubcategories))
@@ -69,7 +70,7 @@ export function Account() {
 
   const login = async (event) => {
     event.preventDefault()
-    const response = await fetch('/api/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(credentials) })
+    const response = await apiFetch('/api/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(credentials) })
     if (!response.ok) {
       const result = await response.json()
       setError(result.error)
@@ -85,7 +86,7 @@ export function Account() {
 
   const saveProfile = async (event) => {
     event.preventDefault()
-    const response = await fetch('/api/me', {
+    const response = await apiFetch('/api/me', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('listToken')}` },
       body: JSON.stringify(profile),
@@ -110,7 +111,7 @@ export function Account() {
     })
     formData.set('removePhotos', JSON.stringify(removedPhotos))
     newPhotos.forEach((photo) => formData.append('photos', photo))
-    const response = await fetch(`/api/my-lists/${editing._id}`, {
+    const response = await apiFetch(`/api/my-lists/${editing._id}`, {
       method: 'PATCH',
       headers: { Authorization: `Bearer ${localStorage.getItem('listToken')}` },
       body: formData,
@@ -135,7 +136,7 @@ export function Account() {
   }
 
   const remove = async (id) => {
-    const response = await fetch(`/api/my-lists/${id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${localStorage.getItem('listToken')}` } })
+    const response = await apiFetch(`/api/my-lists/${id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${localStorage.getItem('listToken')}` } })
     if (response.ok) loadLists()
   }
 
@@ -204,7 +205,7 @@ export function Account() {
             <div className={styles.editPhotos}>
               {(editing.photos || []).filter((photo) => !removedPhotos.includes(photo.filename)).map((photo) => (
                 <div className={styles.editPhoto} key={photo.filename}>
-                  <img src={photo.url} alt={photo.originalName} />
+                  <img src={apiUrl(photo.url)} alt={photo.originalName} />
                   <button type="button" onClick={() => setRemovedPhotos((current) => [...current, photo.filename])}>Remove</button>
                 </div>
               ))}
@@ -239,7 +240,7 @@ export function Account() {
             <p>{list.message}</p>
             {list.photos?.length > 0 && <div className={styles.listPhotos}>
               {list.photos.map((photo) => <a href={photo.url} target="_blank" rel="noreferrer" key={photo.filename || photo.originalName}>
-                <img src={photo.url} alt={photo.originalName} />
+                <img src={apiUrl(photo.url)} alt={photo.originalName} />
               </a>)}
             </div>}
           </div>

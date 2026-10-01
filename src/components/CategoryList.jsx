@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { apiFetch } from '../api'
 import styles from './CategoryList.module.css'
 
 const splitCategoryLabel = (label) => {
@@ -11,7 +12,7 @@ export function CategoryList({ onSelect, selectedCategory }) {
   const [categories, setCategories] = useState([])
 
   useEffect(() => {
-    fetch('/api/menu?active=true&menuType=left_menu')
+    apiFetch('/api/menu?active=true&menuType=left_menu')
       .then((response) => {
         if (!response.ok) throw new Error('Unable to load categories')
         return response.json()

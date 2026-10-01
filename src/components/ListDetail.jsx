@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { apiFetch, apiUrl } from '../api'
 import { formatEventDates } from '../utils/eventDisplay'
 import styles from './ListDetail.module.css'
 
@@ -20,7 +21,7 @@ export function ListDetail({ id }) {
   const likeList = async () => {
     if (liked) return
     try {
-      const response = await fetch(`/api/lists/${id}/like`, { method: 'POST' })
+      const response = await apiFetch(`/api/lists/${id}/like`, { method: 'POST' })
       if (!response.ok) return
       const result = await response.json()
       const storedLikes = JSON.parse(localStorage.getItem('likedLists') || '[]')
@@ -34,7 +35,7 @@ export function ListDetail({ id }) {
   }
 
   useEffect(() => {
-    fetch('/api/lists')
+    apiFetch('/api/lists')
       .then((response) => {
         if (!response.ok) throw new Error('Unable to load list')
         return response.json()
@@ -45,7 +46,7 @@ export function ListDetail({ id }) {
         setList(match)
         if (viewedListId.current === id) return null
         viewedListId.current = id
-        return fetch(`/api/lists/${id}/view`, { method: 'POST' })
+        return apiFetch(`/api/lists/${id}/view`, { method: 'POST' })
       })
       .then((response) => {
         if (!response?.ok) return null
@@ -78,12 +79,12 @@ export function ListDetail({ id }) {
       <div className={styles.content}>
         <section className={styles.gallery} aria-label="List photos">
           <div className={styles.mainImage}>
-            {photo ? <img src={photo.url} alt={list.itemName} /> : <span>No photos uploaded</span>}
+            {photo ? <img src={apiUrl(photo.url)} alt={list.itemName} /> : <span>No photos uploaded</span>}
           </div>
           {photos.length > 1 && <div className={styles.thumbnails}>
             {photos.map((item, index) => (
               <button type="button" className={index === activePhoto ? styles.activeThumbnail : ''} onClick={() => setActivePhoto(index)} key={item.filename || item.originalName}>
-                <img src={item.url} alt={`${list.itemName} thumbnail ${index + 1}`} />
+                <img src={apiUrl(item.url)} alt={`${list.itemName} thumbnail ${index + 1}`} />
               </button>
             ))}
           </div>}

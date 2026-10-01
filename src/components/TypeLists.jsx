@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { apiFetch, apiUrl } from '../api'
 import { rankLists } from '../utils/listRanking'
 import styles from './TypeLists.module.css'
 
@@ -7,7 +8,7 @@ export function TypeLists({ type }) {
   const [error, setError] = useState('')
 
   useEffect(() => {
-    fetch('/api/lists')
+    apiFetch('/api/lists')
       .then((response) => {
         if (!response.ok) throw new Error('Unable to load lists')
         return response.json()
@@ -33,7 +34,7 @@ export function TypeLists({ type }) {
         {lists.map((list) => (
           <a className={styles.card} href={`/lists/${list._id}`} key={list._id}>
             <div className={styles.image}>
-              {list.photos?.[0]?.url ? <img src={list.photos[0].url} alt={list.itemName} /> : <span>No photo</span>}
+              {list.photos?.[0]?.url ? <img src={apiUrl(list.photos[0].url)} alt={list.itemName} /> : <span>No photo</span>}
             </div>
             <div className={styles.cardInfo}>
               <p>{list.itemType === 'other' ? list.otherItemType : list.itemType}</p>

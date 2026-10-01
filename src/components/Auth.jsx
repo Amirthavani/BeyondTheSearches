@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { apiFetch } from '../api'
 import styles from './Account.module.css'
 
 export function Auth({ mode }) {
@@ -16,7 +17,7 @@ export function Auth({ mode }) {
     }
     setSubmitting(true)
     try {
-      const response = await fetch(`/api/auth/${isRegister ? 'register' : 'login'}`, {
+      const response = await apiFetch(`/api/auth/${isRegister ? 'register' : 'login'}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),

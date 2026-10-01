@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { apiFetch } from '../api'
 import { RichTextEditor } from './RichTextEditor'
 import { eventSubcategories } from '../data/eventSubcategories'
 import styles from './Contact.module.css'
@@ -19,21 +20,21 @@ export function Contact() {
   const isLoggedIn = Boolean(localStorage.getItem('listToken'))
 
   useEffect(() => {
-    fetch('/api/menu?active=true&menuType=left_menu')
+    apiFetch('/api/menu?active=true&menuType=left_menu')
       .then((response) => {
         if (!response.ok) throw new Error('Unable to load item types')
         return response.json()
       })
       .then((items) => setItemTypes(items))
       .catch(() => setItemTypes([]))
-    fetch('/api/locations')
+    apiFetch('/api/locations')
       .then((response) => {
         if (!response.ok) throw new Error('Unable to load locations')
         return response.json()
       })
       .then((items) => setLocations(items))
       .catch(() => setLocations([]))
-    fetch('/api/event-subcategories')
+    apiFetch('/api/event-subcategories')
       .then((response) => response.ok ? response.json() : Promise.reject(new Error('Unable to load event subcategories')))
       .then((items) => setAvailableEventSubcategories(items.map((item) => item.label)))
       .catch(() => setAvailableEventSubcategories(eventSubcategories))
@@ -48,7 +49,7 @@ export function Contact() {
       setError('Please register or log in before submitting a list.')
       return
     }
-    const response = await fetch('/api/lists', {
+    const response = await apiFetch('/api/lists', {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}` },
       body: new FormData(event.currentTarget),
