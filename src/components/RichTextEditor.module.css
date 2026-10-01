@@ -1,0 +1,7 @@
+.editor { border-bottom: 1px solid #aaa; }
+.toolbar { display: flex; flex-wrap: wrap; gap: 6px; padding: 8px 0; }
+.toolbar button { padding: 5px 8px; border: 1px solid #000; background: #fff; color: #000; cursor: pointer; font-size: 10px; text-transform: uppercase; }
+.input { min-height: 130px; padding: 10px 0 12px; outline: none; color: #000; font: 16px Arial, sans-serif; line-height: 1.6; }
+.input:empty::before { color: #857C96; content: attr(data-placeholder); pointer-events: none; }
+.input :global(h3) { margin: 12px 0 6px; font-size: 1.2em; }
+.input :global(ul), .input :global(ol) { padding-left: 24px; }

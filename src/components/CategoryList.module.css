@@ -1,0 +1,18 @@
+.categories { padding: 36px 3% 72px; }
+.kicker { margin: 0 0 12px; color: #4285f4; font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+.categories h2 { margin: 0 0 30px; color: #292823; font-size: clamp(38px, 5vw, 64px); letter-spacing: -.06em; line-height: .95; }
+.grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
+.category { display: block; min-width: 0; padding: 16px; border: 1px solid #dcd8cf; background: #fff; color: #292823; font-size: 13px; font-weight: 700; text-decoration: none; transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease; }
+.category:hover { border-color: #4285f4; box-shadow: 4px 5px 0 #eef4ff; transform: translateY(-2px); }
+.category.selected { border-color: #4285f4; background: #eef4ff; box-shadow: 4px 5px 0 #d7e6ff; }
+.icon { margin-right: 10px; font-size: 24px; line-height: 1; vertical-align: middle; }
+
+@media (max-width: 900px) {
+  .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (max-width: 700px) {
+  .categories { padding: 24px 3% 52px; }
+  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .category { padding: 14px; font-size: 12px; }
+}

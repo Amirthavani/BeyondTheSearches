@@ -1,0 +1,21 @@
+.page { min-height: 100vh; padding: 0 3% 100px; }
+.back { color: #000; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-decoration: none; text-transform: uppercase; }
+.contact { display: grid; grid-template-columns: .9fr 1.1fr; gap: 14%; margin: 75px 0 0; padding: 0 7% 80px; border: 1px solid #dcd8cf; border-radius: 18px; background: #fff; box-shadow: 0 8px 24px rgba(128, 128, 128, .28); }
+.kicker { margin: 0 0 18px; color: #4285f4; font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+.intro h1 { max-width: 520px; margin: 0 0 28px; color: #000; font-size: clamp(46px, 6vw, 78px); font-weight: 400; letter-spacing: -.06em; line-height: .95; }
+.intro > p:last-child { max-width: 360px; margin: 0; color: #585163; font-size: 16px; line-height: 1.75; }
+.form { display: flex; flex-direction: column; gap: 18px; }
+.form label { display: flex; flex-direction: column; gap: 7px; color: #000; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+.form input, .form textarea { width: 100%; box-sizing: border-box; padding: 12px 0; border: 0; border-bottom: 1px solid #aaa; outline: none; resize: vertical; background: transparent; color: #000; font: 16px Arial, sans-serif; }
+.form input::placeholder, .form textarea::placeholder { color: #857C96; font-weight: 400; }
+.form input:focus, .form textarea:focus { border-color: #000; }
+.form button { display: flex; align-items: center; justify-content: space-between; margin-top: 8px; padding: 17px 19px; border: 1px solid #fff; border-radius: 8px; background: #4285f4; color: #fff; cursor: pointer; font-size: 14px; font-weight: 700; letter-spacing: .12em; text-align: left; text-transform: uppercase; }
+.form button:disabled { cursor: wait; opacity: .65; }
+.form button span { color: #ebba83; font-size: 17px; }
+.success, .error { margin: 0; font-size: 13px; line-height: 1.6; }
+.success { color: #34a853; }
+.error { color: #ea4335; }
+@media (max-width: 700px) {
+  .page { padding: 0 3% 75px; }
+  .contact { grid-template-columns: 1fr; gap: 40px; margin-top: 55px; padding: 0 7% 55px; }
+}

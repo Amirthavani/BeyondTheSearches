@@ -1,0 +1,26 @@
+.page { min-height: 100vh; padding: 0 3% 100px; }
+.back { color: #000; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-decoration: none; text-transform: uppercase; }
+.kicker { margin: 55px 0 15px; color: #4285f4; font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+.page h1 { margin: 0 0 45px; color: #4285f4; font-size: clamp(48px, 7vw, 88px); letter-spacing: -.06em; line-height: .95; }
+.grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 35px 22px; }
+.card { min-width: 0; color: inherit; text-decoration: none; }
+.image { display: grid; height: 320px; place-items: center; overflow: hidden; background: #e9e3d8; color: #000; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; }
+.image img { width: 100%; height: 100%; object-fit: contain; transition: transform .4s ease; }
+.card:hover .image img { transform: scale(1.04); }
+.cardInfo { padding: 17px 0 12px; border-bottom: 1px solid #dcd8cf; }
+.cardInfo p { margin: 0 0 8px; color: #4285f4; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; }
+.cardInfo p, .cardInfo h2, .cardInfo > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cardInfo h2 { margin: 0 0 10px; color: #000; font-size: 24px; }
+.cardInfo span { color: #000; font-size: 12px; }
+.card small { display: block; margin-top: 10px; color: #585163; font-size: 10px; }
+.viewCount, .likeCount { display: inline-flex; align-items: center; gap: 5px; padding: 5px 8px; border-radius: 999px; font-size: 12px; font-weight: 700; line-height: 1; }
+.viewCount { color: #4285f4; background: #eef4ff; }
+.viewCount svg, .likeCount svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.8; vertical-align: middle; }
+.likeCount { color: #ea4335; background: #fff0ef; }
+.empty, .error { color: #000; font-size: 14px; }
+.error { color: #ea4335; }
+@media (max-width: 700px) {
+  .page { padding: 0 3% 75px; }
+  .grid { grid-template-columns: 1fr; gap: 30px; }
+  .image { height: 280px; }
+}

@@ -1,0 +1,25 @@
+.contact { display: grid; grid-template-columns: .9fr 1.1fr; gap: 14%; margin: 30px 7%; padding: 0 7% 100px; border: 1px solid #dcd8cf; border-radius: 18px; background: #fff; box-shadow: 0 8px 24px rgba(128, 128, 128, .28); color: #000; font-weight: 700; }
+.contactIntro h2 { font-size: clamp(45px, 5vw, 72px); }
+.contactIntro h2 em { color: #d66d4a; font-style: italic; }
+.contactIntro > p:last-child { max-width: 310px; color: #000; font-size: 13px; line-height: 1.75; }
+.form { display: flex; flex-direction: column; gap: 15px; padding-top: 13px; }
+.formFields { display: flex; flex-direction: column; gap: 15px; min-width: 0; margin: 0; padding: 0; border: 0; }
+.formFields:disabled { opacity: .55; }
+.form label { display: flex; flex-direction: column; gap: 7px; color: #000; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+.form input, .form select, .form textarea { width: 100%; box-sizing: border-box; padding: 12px 0; border: 0; border-bottom: 1px solid #aaa; outline: none; resize: vertical; background: transparent; color: #000; font: 16px Arial, sans-serif; }
+.form input::placeholder, .form textarea::placeholder { color: #857C96; font-weight: 400; }
+.form input:focus, .form select:focus, .form textarea:focus { border-color: #d66d4a; }
+.form input[type="file"] { padding: 11px 0; font-family: inherit; font-size: 12px; }
+.checkbox { flex-direction: row !important; align-items: center; gap: 9px !important; }
+.submitButton { display: flex; align-items: center; justify-content: space-between; width: 100%; margin-top: 5px; padding: 17px 19px; border: 1px solid #fff; border-radius: 8px; background: #4285f4; color: #fff; cursor: pointer; font-size: 14px; font-weight: 700; letter-spacing: .12em; text-align: left; text-transform: uppercase; }
+.submitButton span { color: #ebba83; font-size: 17px; }
+.error { margin: -10px 0 0; color: #b84c34; font-size: 11px; }
+.error a { color: #4285f4; font-weight: 700; }
+.success { margin: -10px 0 0; color: #4285f4; font-size: 13px; font-weight: 700; line-height: 1.6; }
+.authPrompt { margin: 0; color: #000; font-size: 13px; font-weight: 700; line-height: 1.6; }
+.authPrompt a { color: #4285f4; }
+
+@media (max-width: 700px) {
+  .contact { grid-template-columns: 1fr; gap: 35px; padding: 0 7% 75px; }
+  .submitButton { min-height: 50px; }
+}

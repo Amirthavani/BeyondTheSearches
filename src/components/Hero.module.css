@@ -1,0 +1,48 @@
+.hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9%;
+  min-height: 600px;
+  align-items: center;
+  margin: 0 0 20px;
+  padding: 0 3% 75px;
+  background: linear-gradient(135deg, #fbbc05, #fff);
+  border-radius: 24px;
+  box-shadow: 0 8px 24px rgba(128, 128, 128, .28);
+}
+
+.eyebrow, .kicker {
+  color: #000;
+  font-size: 10px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+
+.eyebrow { display: flex; align-items: center; gap: 10px; }
+.eyebrow span { width: 28px; height: 1px; background: #d66d4a; }
+h1, h2 { margin: 22px 0; color: #292823; font-family: Arial, sans-serif; font-weight: 400; letter-spacing: -.065em; line-height: .92; }
+h1 { font-size: clamp(58px, 7.2vw, 102px); }
+h1 em, h2 span { color: #d66d4a; font-style: italic; }
+.intro { margin: 30px 0 42px; color: #000; font-size: 18px; line-height: 1.75; }
+.intro p { margin: 0; }
+.scrollLink { display: inline-flex; align-items: center; gap: 12px; color: #292823; font-size: 11px; letter-spacing: .08em; text-decoration: none; text-transform: uppercase; }
+.scrollIcon { display: grid; width: 30px; height: 30px; place-items: center; border: 1px solid #c8c2b6; border-radius: 50%; color: #d66d4a; font-size: 16px; }
+.heroVisual { position: relative; height: 470px; touch-action: pan-y; }
+.sun { position: absolute; top: 3%; right: 6%; width: 150px; height: 150px; border-radius: 50%; background: #fbbc05; }
+.arch { position: relative; width: 100%; height: 100%; overflow: hidden; border-radius: 0; background: #d9bca8; box-shadow: 14px 18px 0 #eee8dd; }
+.featuredLink { position: absolute; right: 2%; bottom: 0; display: block; width: min(100%, 600px); height: 480px; color: inherit; text-decoration: none; }
+.archImage { display: block; width: 100%; height: 100%; object-fit: contain; background: linear-gradient(180deg, rgba(31,33,25,.05), rgba(31,33,25,.25)), url('https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=900&q=85') center/cover; filter: saturate(.7); }
+.archLabel { position: absolute; right: 24px; bottom: 22px; color: #f8f4ed; font-size: 10px; letter-spacing: .1em; }
+.heroControls { position: absolute; bottom: -48px; left: 50%; z-index: 1; display: flex; align-items: center; gap: 10px; color: #000; font-size: 10px; transform: translateX(-50%); }
+.heroControls button { width: 32px; height: 32px; border: 1px solid #bab2a4; border-radius: 50%; background: #fff; color: #000; cursor: pointer; }
+.locationCard { position: absolute; bottom: 37px; left: 0; display: flex; flex-direction: column; gap: 5px; padding: 17px 20px; background: #f8f4ed; box-shadow: 5px 8px 0 rgba(41,40,35,.08); color: inherit; text-decoration: none; }
+.locationCard span, .locationCard small { color: #585163; font-size: 9px; letter-spacing: .1em; text-transform: uppercase; }
+.locationCard strong { color: #292823; font-family: Arial, sans-serif; font-size: 20px; font-weight: 400; }
+
+@media (max-width: 700px) {
+  .hero { grid-template-columns: 1fr; gap: 35px; min-height: auto; padding: 0 3% 65px; }
+  .heroVisual { height: 370px; }
+  .featuredLink { right: 3%; width: min(94%, 420px); height: 380px; }
+  .arch { right: 3%; width: min(94%, 420px); height: 380px; border-radius: 0; }
+  .locationCard { bottom: 20px; }
+}

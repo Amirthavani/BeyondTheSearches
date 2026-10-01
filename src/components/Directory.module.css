@@ -1,0 +1,45 @@
+.page { min-height: 100vh; padding: 0 3% 100px; }
+.homeFeed { padding: 36px 3% 100px; }
+.back { color: #000; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-decoration: none; text-transform: uppercase; }
+.kicker { margin: 55px 0 15px; color: #4285f4; font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+.page h1 { margin: 0 0 45px; color: #4285f4; font-size: clamp(48px, 7vw, 88px); letter-spacing: -.06em; line-height: .95; }
+.feedHeading .kicker { margin: 0 0 12px; }
+.recommendationKicker { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.recommendationKicker span { color: #585163; font-size: 13px; font-weight: 400; letter-spacing: .03em; text-transform: none; }
+.recommendationKicker strong { color: #292823; font-weight: 700; }
+.feedHeading h2 { margin: 0 0 36px; color: #292823; font-size: clamp(38px, 5vw, 64px); letter-spacing: -.06em; line-height: .95; }
+.feedTitle { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.feedTitle button { flex: 0 0 auto; padding: 0; border: 0; background: transparent; color: #4285f4; cursor: pointer; font-size: 11px; font-weight: 700; text-decoration: underline; text-transform: uppercase; }
+.searchTerm { display: flex; align-items: center; gap: 12px; margin: -25px 0 30px; color: #585163; font-size: 14px; }
+.searchTerm button { padding: 0; border: 0; background: transparent; color: #4285f4; cursor: pointer; font: inherit; font-size: 11px; font-weight: 700; text-decoration: underline; text-transform: uppercase; }
+.filters { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 42px; }
+.filters label { display: flex; flex-direction: column; gap: 8px; color: #000; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; }
+.filters input, .filters select { padding: 11px 0; border: 0; border-bottom: 1px solid #bab2a4; background: transparent; color: #000; font: 16px Arial, sans-serif; outline: none; }
+.grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 35px 22px; }
+.card { min-width: 0; color: inherit; text-decoration: none; }
+.image { display: grid; height: 320px; place-items: center; overflow: hidden; background: #e9e3d8; color: #000; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; }
+.image img { width: 100%; height: 100%; object-fit: contain; transition: transform .4s ease; }
+.card:hover .image img { transform: scale(1.04); }
+.cardInfo { padding: 17px 0 12px; border-bottom: 1px solid #dcd8cf; }
+.cardInfo p { margin: 0 0 8px; color: #4285f4; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; }
+.cardInfo p, .cardInfo h2, .cardInfo > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cardInfo h2 { margin: 0 0 10px; color: #000; font-size: 24px; }
+.cardInfo span, .card small, .empty, .error { color: #000; }
+.cardInfo span { font-size: 12px; }
+.card small { display: block; margin-top: 10px; color: #585163; font-size: 10px; }
+.viewCount, .likeCount { display: inline-flex; align-items: center; gap: 5px; padding: 5px 8px; border-radius: 999px; font-size: 12px; font-weight: 700; line-height: 1; }
+.viewCount { color: #4285f4; background: #eef4ff; }
+.viewCount svg, .likeCount svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.8; vertical-align: middle; }
+.likeCount { color: #ea4335; background: #fff0ef; }
+.error { font-size: 14px; }
+.loading, .endMessage { margin: 42px 0 0; color: #585163; font-size: 12px; text-align: center; }
+.loadMore { height: 1px; }
+@media (max-width: 700px) {
+  .page { padding: 0 3% 75px; }
+  .homeFeed { padding: 24px 3% 75px; }
+  .filters { grid-template-columns: 1fr; }
+  .feedTitle { align-items: flex-start; flex-direction: column; gap: 12px; }
+  .feedHeading h2 { margin-bottom: 0; }
+  .grid { grid-template-columns: 1fr; gap: 30px; }
+  .image { height: 280px; }
+}
